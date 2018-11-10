@@ -17,7 +17,8 @@ public enum eGameDifficulty {
 	/**
 	 * iDifficulty -The value which represents a game difficulty
 	 */
-	private final int iDifficulty;
+	private final int
+	iDifficulty;
 	/**
 	 * lookup -A map pairing iDifficulty with gameDifficulty
 	 */

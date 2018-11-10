@@ -3,9 +3,11 @@ package pkgGame;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import pkgEnum.eGameDifficulty;
 
 import org.junit.Test;
 
@@ -15,6 +17,48 @@ public class SudokuPrivateMethodsTest {
 		for (int i = 0; i < 50; i++)
 			System.out.print("*");
 		System.out.println();
+	}
+	
+	/**
+	 * Sudoku_Test1 -Tests if Sudoku's no-arg constructor builds an instance of Sudoku with the eGameDifficulty 'EASY'. 
+	 * 					Also tests if Sudoku's two-arg constructor sets the proper difficulty.
+	 */
+	@Test
+	public void Sudoku_Test1() {
+		Sudoku s1 = null;
+		eGameDifficulty medium = eGameDifficulty.MEDIUM;
+		Class<?> cs;
+		try {
+			cs = Class.forName("pkgGame.Sudoku");
+			Constructor noArgConstructor = cs.getDeclaredConstructor();
+			noArgConstructor.setAccessible(true);
+			s1 = (Sudoku) noArgConstructor.newInstance();
+			assertTrue(s1 instanceof Sudoku);
+			Field difficulty = cs.getDeclaredField("eGameDifficulty");
+			difficulty.setAccessible(true);
+			eGameDifficulty eGameDifficulty1 = (eGameDifficulty) difficulty.get(s1);
+			assertTrue(eGameDifficulty1.getiDifficulty() == 100);
+			Sudoku s2 = new Sudoku(9, medium);
+			eGameDifficulty eGameDifficulty2 = (eGameDifficulty) difficulty.get(s2);
+			assertTrue(eGameDifficulty2.getiDifficulty() == 500);
+			
+		} catch (NoSuchMethodException | SecurityException e) {
+			fail("No method found or Security Exception thrown");
+		} catch (InstantiationException e) {
+			fail("Instantiation Exception Thrown");
+		} catch (IllegalAccessException e) {
+			fail("Illegal Access");
+		} catch (IllegalArgumentException e) {
+			fail("Wrong Argument used");
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}  catch (ClassNotFoundException e) {
+			fail("No Class of name found");
+		} catch (NoSuchFieldException e) {
+			fail("No field of name found");
+		} catch (Exception e) {
+			fail("Test failed to build a Sudoku");
+		}
 	}
 
 	@Test

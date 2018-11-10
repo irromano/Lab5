@@ -8,9 +8,11 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import pkgEnum.eGameDifficulty;
+
 public class SudokuTest {
 
-/*	private void PrintStars() {
+	private void PrintStars() {
 		for (int i = 0; i < 50; i++)
 			System.out.print("*");
 		System.out.println();
@@ -33,8 +35,18 @@ public class SudokuTest {
 		Sudoku s1 = new Sudoku(10);
 
 	}
-
 	@Test
+	public void Sudoku_Test3() {
+		eGameDifficulty medium = eGameDifficulty.MEDIUM;
+		try {
+			Sudoku s1 = new Sudoku(9, medium);
+		} catch (Exception e) {
+			fail("Test failed to build a Sudoku");
+		}
+	}
+	
+
+/*	@Test
 	public void getRegion_Test1() {
 
 		int[][] puzzle = { { 1, 2, 3, 4 }, { 3, 4, 1, 2 }, { 2, 1, 4, 3 }, { 4, 3, 2, 1 } };
