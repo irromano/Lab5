@@ -111,6 +111,7 @@ public class Sudoku extends LatinSquare implements Serializable {
 	public Sudoku(int iSize, pkgEnum.eGameDifficulty eGameDifficulty) throws Exception {
 		this(iSize);
 		this.eGameDifficulty = eGameDifficulty;
+		RemoveCells();
 	}
 
 	
@@ -143,7 +144,7 @@ public class Sudoku extends LatinSquare implements Serializable {
 		for (int iRow = 0; iRow < iSize; iRow++) {
 			for (int iCol = 0; iCol < iSize; iCol++) {
 				SudokuCell c = new SudokuCell(iRow, iCol);
-				c.setlstValidValues(getAllValidCellValues(iCol, iRow));
+				c.setlstRemainingValidValues(getAllValidCellValues(iCol, iRow));
 				cells.put(c.hashCode(), c);
 			}
 		}
@@ -199,9 +200,15 @@ public class Sudoku extends LatinSquare implements Serializable {
 	private static int PossibleValuesMultiplier(java.util.HashMap<java.lang.Integer,Sudoku.SudokuCell> cells) {
 		int difficultyScore = 1;
 		Iterator cellsIt = cells.entrySet().iterator();
-		while (cellsIt.hasNext()) {
-			difficultyScore *= cells.get(cellsIt.next()).getLstRemainingValidValues().size();
+		for (int row = 0; row < Math.sqrt(cells.size()); row++) {
+			for (int col = 0; col < Math.sqrt(cells.size()); col++) {
+				difficultyScore *= (cells.get(Objects.hash(row,col)).getlstRemainingValidValues().size() + 1);
+			}
 		}
+//		while (cellsIt.hasNext()) {
+//			//difficultyScore *= (cells.get(cellsIt.next()).getlstRemainingValidValues().size());
+//			System.out.println(cellsIt.next());
+//		}
 		return difficultyScore;
 		
 		
@@ -544,17 +551,23 @@ public class Sudoku extends LatinSquare implements Serializable {
 	/**
 	 * RemoveCells - this method will remove cells (set them to zero) until the game's difficulty is met
 	 */
-//	private void RemoveCells() {
-//		Random rand = new SecureRandom();
-//		
-//		for (int i = ar.length - 1; i > 0; i--) {
-//			int index = rand.nextInt(i + 1);
-//			// Simple swap
-//			int a = ar[index];
-//			ar[index] = ar[i];
-//			ar[i] = a;
-//		}
-//	}
+	private void RemoveCells() {
+		int[] arr = new int[iSize * iSize];
+		for(int i = 0; i < arr.length; i++) {
+			arr[i] = i;
+		}
+		int index = 0;
+		shuffleArray(arr);
+		
+		while(!IsDifficultyMet(PossibleValuesMultiplier(cells))) {
+			int row = arr[index] / iSize;
+			int col = arr[index] % iSize;
+			this.getPuzzle()[row][col] = 0;
+			cells.get(Objects.hash(row,col)).setlstRemainingValidValues(getAllValidCellValues(col, row));
+			SetRemainingCells();
+			index++;
+		}
+	}
 
 	/**
 	 * SetRegion - purpose of this method is to set the values of a given region
@@ -685,12 +698,12 @@ public class Sudoku extends LatinSquare implements Serializable {
 			lstValidValues = new ArrayList<Integer>(hsValidValues);
 		}
 
-		public ArrayList<Integer> getLstRemainingValidValues() {
+		public ArrayList<Integer> getlstRemainingValidValues() {
 			return lstRemainingValidValues;
 		}
 
-		public void setLstRemainingValidValues(ArrayList<Integer> lstRemainingValidValues) {
-			this.lstRemainingValidValues = lstRemainingValidValues;
+		public void setlstRemainingValidValues(HashSet<Integer> lstRemainingValidValues) {
+			this.lstRemainingValidValues = new ArrayList<Integer>(lstRemainingValidValues);
 		}
 
 		public void ShuffleValidValues() {
