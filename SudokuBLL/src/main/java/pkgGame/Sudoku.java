@@ -207,12 +207,6 @@ public class Sudoku extends LatinSquare implements Serializable {
 				difficultyScore *= diffMultiply;
 			}
 		}
-		//Could not use iterator because cells would return null
-//		Iterator cellsIt = cells.entrySet().iterator();
-//		while (cellsIt.hasNext()) {
-//			//difficultyScore *= (cells.get(cellsIt.next()).getlstRemainingValidValues().size());
-//			System.out.println(cellsIt.next());
-//		}
 		return difficultyScore;
 		
 		
