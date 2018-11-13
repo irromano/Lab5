@@ -195,16 +195,20 @@ public class Sudoku extends LatinSquare implements Serializable {
 	 *   	If the multiplier is greater than the MAX_VALUE for an Integer, return the Integer.MAX_VALUE 
 	 *  Step 5: if the puzzle still doesn't meet the required difficulty, go to step 2 
 	 * @param cells
-	 * @return 
+	 * @return difficultyScore
 	 */
 	private static int PossibleValuesMultiplier(java.util.HashMap<java.lang.Integer,Sudoku.SudokuCell> cells) {
 		int difficultyScore = 1;
-		Iterator cellsIt = cells.entrySet().iterator();
 		for (int row = 0; row < Math.sqrt(cells.size()); row++) {
 			for (int col = 0; col < Math.sqrt(cells.size()); col++) {
-				difficultyScore *= (cells.get(Objects.hash(row,col)).getlstRemainingValidValues().size() + 1);
+				int diffMultiply = cells.get(Objects.hash(row,col)).getlstRemainingValidValues().size();
+				if (diffMultiply < 1)
+					diffMultiply = 1;
+				difficultyScore *= diffMultiply;
 			}
 		}
+		//Could not use iterator because cells would return null
+//		Iterator cellsIt = cells.entrySet().iterator();
 //		while (cellsIt.hasNext()) {
 //			//difficultyScore *= (cells.get(cellsIt.next()).getlstRemainingValidValues().size());
 //			System.out.println(cellsIt.next());
@@ -217,7 +221,7 @@ public class Sudoku extends LatinSquare implements Serializable {
 	/**
 	 * IsDifficultyMet - will return boolean if the given difficulty score meets the game's difficulty.
 	 * @param iPossibleValues
-	 * @return
+	 * @return boolean (whether difficulty was met or not)
 	 */
 	private boolean IsDifficultyMet(int iPossibleValues) {
 		return iPossibleValues >= eGameDifficulty.getiDifficulty();
